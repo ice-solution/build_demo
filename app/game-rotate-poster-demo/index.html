@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="zh-HK">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Rotate Poster</title>
+  <script type="module" crossorigin>(function(){const s=document.createElement("link").relList;if(s&&s.supports&&s.supports("modulepreload"))return;for(const n of document.querySelectorAll('link[rel="modulepreload"]'))i(n);new MutationObserver(n=>{for(const a of n)if(a.type==="childList")for(const p of a.addedNodes)p.tagName==="LINK"&&p.rel==="modulepreload"&&i(p)}).observe(document,{childList:!0,subtree:!0});function o(n){const a={};return n.integrity&&(a.integrity=n.integrity),n.referrerPolicy&&(a.referrerPolicy=n.referrerPolicy),n.crossOrigin==="use-credentials"?a.credentials="include":n.crossOrigin==="anonymous"?a.credentials="omit":a.credentials="same-origin",a}function i(n){if(n.ep)return;n.ep=!0;const a=o(n);fetch(n.href,a)}})();const c=10,b=11,S=60,k=80,v=700,y=["poster1.png","poster2.png","poster3.png","poster4.png","poster5.png","poster6.png","poster7.jpg","poster8.jpg","poster9.jpg","poster10.jpg","poster11.png"],$=["1ST","2ND","3RD"];y.forEach(e=>{const s=new Image;s.src=`posters/${e}`});let I={name:""},t={posters:[],currentIdx:0,isLocked:!1,isStarted:!1,isEnded:!1,elapsed:0,timeLimit:S},m=null;const r=e=>document.getElementById(e),x=r("home-screen"),O=r("game-screen"),T=r("result-screen"),w=r("name-input"),M=r("btn-join"),f=r("poster-frame"),C=r("poster-img"),A=r("progress"),d=r("timer"),D=r("cross-overlay"),R=r("tick-overlay"),N=r("result-title"),_=r("result-list"),j=r("btn-play-again");function L(e){for(const s of[x,O,T])s.classList.toggle("hidden",s!==e)}const g=e=>{const s=Math.floor(e/60).toString().padStart(2,"0"),o=(e%60).toString().padStart(2,"0");return`${s}:${o}`},F=e=>(e%360+360)%360===0,l=()=>t.posters[t.currentIdx];function W(){const e=[];let s=-1;for(let o=0;o<c;o++){let i;do i=Math.floor(Math.random()*b);while(i===s);s=i,e.push({imageIdx:i,rotation:(Math.floor(Math.random()*3)+1)*90})}return e}function u(){if(t.currentIdx>=c)return;const e=l();C.src=`posters/${y[e.imageIdx]}`,f.style.transform=`rotate(${-e.rotation}deg)`,A.textContent=`${t.currentIdx+1} / ${c}`;const s=t.timeLimit-t.elapsed;d.textContent=g(Math.max(0,s)),d.classList.toggle("urgent",s<=10)}function P(e,s){N.textContent=s?"WELL DONE!":"TIME'S UP!",_.innerHTML=`
+    <div class="rank-row rank-self">
+      <span class="rank-num">${$[0]}</span>
+      <span class="rank-name">${I.name||"Player"}</span>
+      ${s?`<span class="rank-time">${g(Math.round(e))}</span>`:'<span class="rank-time timesup">---</span>'}
+    </div>`,L(T)}function q(){t={posters:W(),currentIdx:0,isLocked:!1,isStarted:!0,isEnded:!1,elapsed:0,timeLimit:S},L(O),u(),m=setInterval(()=>{t.elapsed++;const e=t.timeLimit-t.elapsed;d.textContent=g(Math.max(0,e)),d.classList.toggle("urgent",e<=10),e<=0&&(clearInterval(m),t.isEnded=!0,t.isLocked=!0,P(t.elapsed,!1))},1e3)}function G(){clearInterval(m),t.isEnded=!0,P(t.elapsed,!0)}function U(){!t.isStarted||t.isEnded||t.isLocked||(l().rotation+=90,t.isLocked=!0,u(),setTimeout(()=>{t.isLocked=!1},k))}function B(){!t.isStarted||t.isEnded||t.isLocked||(l().rotation-=90,t.isLocked=!0,u(),setTimeout(()=>{t.isLocked=!1},k))}function H(){if(!(!t.isStarted||t.isEnded||t.isLocked))if(F(l().rotation)){t.isLocked=!0,h(R,300);const e=t.currentIdx+1;if(e>=c){G();return}t.currentIdx=e,f.style.transition="none",u(),requestAnimationFrame(()=>requestAnimationFrame(()=>{f.style.transition="",t.isLocked=!1}))}else t.isLocked=!0,h(D,v),setTimeout(()=>{t.isLocked=!1},v)}function h(e,s){e.classList.remove("show"),e.offsetWidth,e.classList.add("show"),setTimeout(()=>e.classList.remove("show"),s)}function E(e,s){const o=r(e);o.addEventListener("pointerdown",n=>{n.preventDefault(),o.classList.add("pressed"),s()});const i=()=>o.classList.remove("pressed");o.addEventListener("pointerup",i),o.addEventListener("pointercancel",i),o.addEventListener("pointerleave",i)}E("btn-ccw",U);E("btn-ok",H);E("btn-cw",B);M.addEventListener("click",()=>{I.name=w.value.trim(),q()});w.addEventListener("keydown",e=>{e.key==="Enter"&&M.click()});j.addEventListener("click",()=>L(x));document.addEventListener("contextmenu",e=>e.preventDefault());</script>
+  <style rel="stylesheet" crossorigin>*,*:before,*:after{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}:root{--bg: #0d0d1a;--surface: #1a1a2e;--border: rgba(255, 255, 255, .12);--ok: #4caf50;--blue: #1e88e5;--danger: #ef5350;--gold: #ffd54f;--text: #f0f0f0;--text-dim: #888;--radius: 16px}html,body{height:100%;overflow:hidden;background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,Segoe UI,sans-serif;touch-action:none;user-select:none;-webkit-user-select:none}.screen{position:fixed;top:0;right:0;bottom:0;left:0;display:flex;align-items:center;justify-content:center;overflow-y:auto}.hidden{display:none!important}.home-content{display:flex;flex-direction:column;align-items:center;gap:20px;padding:40px 28px;width:100%;max-width:380px;text-align:center}.home-content h1{font-size:clamp(2.4rem,10vw,3.2rem);font-weight:900;letter-spacing:3px;line-height:1.1;background:linear-gradient(135deg,#fff 30%,#aaa);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}.text-input{width:100%;padding:14px 18px;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);color:var(--text);font-size:1rem;outline:none;touch-action:auto;user-select:text;-webkit-user-select:text;-webkit-tap-highlight-color:auto;transition:border-color .2s}.text-input:focus{border-color:var(--blue)}.text-input::placeholder{color:var(--text-dim)}.name-row{width:100%}.join-row{display:flex;gap:10px;width:100%}.code-input{flex:1;text-transform:uppercase;letter-spacing:4px;font-weight:700;font-size:1.1rem}.divider{width:100%;display:flex;align-items:center;gap:12px;color:var(--text-dim);font-size:.85rem}.divider:before,.divider:after{content:"";flex:1;height:1px;background:var(--border)}.error-msg{color:var(--danger);font-size:.85rem;min-height:1.2em;text-align:center}.btn-primary{width:100%;background:var(--ok);color:#fff;border:none;padding:16px;font-size:1rem;font-weight:700;letter-spacing:2px;border-radius:50px;cursor:pointer;transition:transform .1s,filter .1s}.btn-primary:active{transform:scale(.96);filter:brightness(.85)}.btn-secondary{background:var(--surface);color:var(--text);border:1px solid var(--border);padding:14px 20px;font-size:1rem;font-weight:600;border-radius:var(--radius);cursor:pointer;white-space:nowrap;transition:transform .1s,filter .1s}.btn-secondary:active{transform:scale(.96);filter:brightness(.8)}.lobby-content{display:flex;flex-direction:column;align-items:center;gap:16px;padding:40px 28px;width:100%;max-width:380px;text-align:center}.lobby-label{font-size:.75rem;letter-spacing:3px;color:var(--text-dim);text-transform:uppercase}.countdown{font-size:clamp(4rem,20vw,7rem);font-weight:900;letter-spacing:4px;color:var(--gold);font-family:Courier New,monospace;line-height:1;transition:color .3s}.countdown.urgent{color:var(--danger)}.countdown.notenough{color:var(--text-dim)}.lobby-status-msg{font-size:.9rem;color:var(--danger);min-height:1.2em;font-weight:600;letter-spacing:1px;text-align:center}.player-list{width:100%;display:flex;flex-direction:column;gap:8px;max-height:40vh;overflow-y:auto;margin:8px 0}.player-row{display:flex;align-items:center;gap:12px;padding:12px 16px;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);font-size:.95rem}.player-num{width:24px;height:24px;background:var(--blue);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.75rem;font-weight:700;flex-shrink:0}.player-name{flex:1;text-align:left}.waiting-text{font-size:.9rem;color:var(--text-dim);padding:12px}#game-screen{flex-direction:column;background:url(./bg_P3.png) center/cover no-repeat}#game-header{width:100%;display:flex;justify-content:space-between;align-items:center;padding:14px 24px 8px;flex-shrink:0}#progress{font-size:1rem;color:var(--text-dim);font-weight:600;letter-spacing:1px}#timer{font-size:1.5rem;font-family:Courier New,monospace;font-weight:700;color:var(--ok);transition:color .4s;min-width:64px;text-align:right}#timer.urgent{color:var(--danger)}#live-board{width:100%;display:flex;gap:8px;padding:4px 16px 6px;overflow-x:auto;flex-shrink:0;scrollbar-width:none}#live-board::-webkit-scrollbar{display:none}.lb-row{display:flex;align-items:center;gap:5px;background:var(--surface);border:1px solid var(--border);border-radius:20px;padding:4px 10px;font-size:.75rem;white-space:nowrap;flex-shrink:0}.lb-self{border-color:var(--blue);background:#1e88e526}.lb-name{color:var(--text);font-weight:600}.lb-prog{color:var(--text-dim)}.lb-done{color:var(--ok);font-weight:700}#game-main{flex:1;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden;width:100%;min-height:0}#poster-container{position:relative;display:flex;align-items:center;justify-content:center;width:100%;height:100%}#poster-wrapper{display:flex;align-items:center;justify-content:center;width:100%;height:100%}#poster-frame{display:flex;align-items:center;justify-content:center;overflow:hidden;transition:transform .08s ease-out;will-change:transform}#poster-img{height:min(52vh,78vw);width:auto;object-fit:unset;display:block;pointer-events:none;-webkit-user-drag:none}#cross-overlay,#tick-overlay{position:absolute;top:0;right:0;bottom:0;left:0;display:flex;align-items:center;justify-content:center;font-size:clamp(5rem,20vw,7rem);font-weight:900;pointer-events:none;opacity:0}#cross-overlay{color:var(--danger)}#tick-overlay{color:var(--ok)}@keyframes crossAnim{0%{opacity:1;transform:scale(.8)}40%{opacity:1;transform:scale(1.4)}to{opacity:0;transform:scale(1.8)}}@keyframes tickAnim{0%{opacity:1;transform:scale(.6)}30%{opacity:1;transform:scale(1.2)}to{opacity:0;transform:scale(1)}}#cross-overlay.show{animation:crossAnim .7s ease-out forwards}#tick-overlay.show{animation:tickAnim .4s ease-out forwards}#game-footer{width:100%;display:flex;justify-content:center;align-items:center;gap:14px;padding:12px 24px 28px;flex-shrink:0}.ctrl-btn{flex:1;max-width:110px;aspect-ratio:1;border:none;border-radius:var(--radius);font-size:clamp(1.6rem,6vw,2rem);cursor:pointer;color:#fff;background:#1e88e52e;border:1px solid rgba(30,136,229,.4);color:#90caf9;transition:transform .05s,filter .05s;touch-action:manipulation;-webkit-touch-callout:none}.ok-btn{background:#4caf5040;border-color:#4caf5080;color:var(--ok);font-size:clamp(1.8rem,7vw,2.4rem)}.ctrl-btn.pressed{transform:scale(.88);filter:brightness(.7)}.result-content{display:flex;flex-direction:column;align-items:center;gap:20px;padding:40px 24px;width:100%;max-width:420px;text-align:center}#result-title{font-size:clamp(2rem,9vw,3rem);font-weight:900;letter-spacing:2px}.result-list{width:100%;display:flex;flex-direction:column;gap:10px;max-height:50vh;overflow-y:auto}.rank-row{display:flex;align-items:center;gap:12px;padding:14px 18px;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius)}.rank-row.rank-self{border-color:var(--gold);background:#ffd54f14}.rank-num{font-size:1.4rem;width:36px;text-align:center;flex-shrink:0}.rank-name{flex:1;text-align:left;font-weight:600;font-size:.95rem}.rank-time{font-family:Courier New,monospace;font-weight:700;font-size:.9rem;color:var(--ok);flex-shrink:0}.rank-time.timesup{color:var(--text-dim)}</style>
+</head>
+<body>
+
+  <!-- ── Home Screen ── -->
+  <div id="home-screen" class="screen">
+    <div class="home-content">
+      <h1>ROTATE<br>POSTER</h1>
+
+      <div class="name-row">
+        <input id="name-input" class="text-input" type="text"
+               placeholder="Your name (optional)" maxlength="12" autocomplete="off">
+      </div>
+
+      <button id="btn-join" class="btn-primary">START GAME</button>
+    </div>
+  </div>
+
+  <!-- ── Game Screen ── -->
+  <div id="game-screen" class="screen hidden">
+    <header id="game-header">
+      <div id="progress">1 / 10</div>
+      <div id="timer">01:00</div>
+    </header>
+
+    <main id="game-main">
+      <div id="poster-container">
+        <div id="poster-wrapper">
+          <div id="poster-frame">
+            <img id="poster-img" src="" alt="poster" draggable="false">
+          </div>
+        </div>
+        <div id="cross-overlay">✗</div>
+        <div id="tick-overlay">✓</div>
+      </div>
+    </main>
+
+    <footer id="game-footer">
+      <button id="btn-ccw"  class="ctrl-btn"          aria-label="Rotate anti-clockwise">↺</button>
+      <button id="btn-ok"   class="ctrl-btn ok-btn"   aria-label="Confirm">✓</button>
+      <button id="btn-cw"   class="ctrl-btn"          aria-label="Rotate clockwise">↻</button>
+    </footer>
+  </div>
+
+  <!-- ── Result Screen ── -->
+  <div id="result-screen" class="screen hidden">
+    <div class="result-content">
+      <h1 id="result-title">Results</h1>
+      <div id="result-list" class="result-list"></div>
+      <button id="btn-play-again" class="btn-primary">PLAY AGAIN</button>
+    </div>
+  </div>
+
+</body>
+</html>
